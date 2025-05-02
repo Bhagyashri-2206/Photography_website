@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Lens & Light</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+</head>
+<body>
+  <header>
+    <div class="navbar">
+      <div class="logo-section">
+        <img src="assets/logo.png" alt="Logo" />
+        <h1>Lens & Light</h1>
+      </div>
+      <nav id="navLinks">
+        <a href="#">Home</a>
+        <a href="#">Book Appointment</a>
+        <a href="#">Gallery</a>
+        <a href="#">Feedback</a>
+        <a href="#">About Us</a>
+      </nav>
+      <div class="hamburger" onclick="toggleMenu()">
+        <i class="fas fa-bars"></i>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <h2>Capturing Your Moments, One Click at a Time</h2>
+      <p>Welcome to Lens & Light, where every photo tells a story. From weddings to portraits, we turn your special moments into timeless memories.</p>
+      <img src="assets/banner.png" alt="Home Banner" />
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-content">
+      <p><strong>Photographer:</strong> John Doe</p>
+      <p><strong>Contact:</strong> +1-234-567-8901</p>
+      <p><strong>Email:</strong> photographer@example.com</p>
+      <div class="social-icons">
+        <a href="#"><i class="fab fa-facebook"></i></a>
+        <a href="#"><i class="fab fa-instagram"></i></a>
+        <a href="#"><i class="fab fa-whatsapp"></i></a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    function toggleMenu() {
+      document.getElementById("navLinks").classList.toggle("active");
+    }
+  </script>
+</body>
+</html>
