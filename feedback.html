@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Feedback - Photowala Patil</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to bottom, rgba(0,0,0,0.7), rgba(0,0,0,0.9)),
+                  url('https://source.unsplash.com/1600x900/?camera,photography,studio');
+      background-size: cover;
+      background-position: center;
+      color: #fff;
+      padding-bottom: 50px;
+    }
+
+    header {
+      text-align: center;
+      padding: 60px 20px 30px;
+      background: rgba(0,0,0,0.6);
+    }
+
+    header h1 {
+      font-size: 3rem;
+      color: #ffdf7e;
+      margin-bottom: 10px;
+      text-shadow: 1px 1px 8px #000;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 30px auto;
+      padding: 20px;
+    }
+
+    .form-section {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(8px);
+      border-radius: 15px;
+      padding: 30px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.3);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .form-section:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 0 30px rgba(255, 223, 126, 0.3);
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: bold;
+      color: #ffdf7e;
+    }
+
+    input[type="text"], textarea {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 16px;
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+    }
+
+    .stars {
+      display: flex;
+      gap: 5px;
+      cursor: pointer;
+    }
+
+    .star {
+      font-size: 30px;
+      color: #ccc;
+      transition: color 0.3s, transform 0.2s;
+    }
+
+    .star.selected,
+    .star:hover,
+    .star.hovered {
+      color: #f4c10f;
+      transform: scale(1.1);
+    }
+
+    button {
+      background-color: #4e54c8;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      font-size: 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background-color: #3c3fa8;
+    }
+
+    .feedbacks {
+      margin-top: 40px;
+    }
+
+    .feedback {
+      border-bottom: 1px solid #eee;
+      padding: 15px 0;
+    }
+
+    .feedback p {
+      margin: 6px 0;
+    }
+
+    .rating {
+      color: #f4c10f;
+      font-size: 18px;
+    }
+
+    .summary {
+      margin-bottom: 20px;
+      font-size: 18px;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .star-average {
+      font-size: 22px;
+      color: #f4c10f;
+    }
+
+    @media (max-width: 600px) {
+      header h1 {
+        font-size: 2.2rem;
+      }
+
+      .container {
+        padding: 20px;
+      }
+
+      .star {
+        font-size: 26px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Customer Feedback</h1>
+  </header>
+
+  <div class="container">
+    <div class="form-section">
+      <form id="feedbackForm">
+        <div class="form-group">
+          <label for="name">Your Name</label>
+          <input type="text" id="name" required placeholder="Enter your name">
+        </div>
+
+        <div class="form-group">
+          <label>Rating</label>
+          <div class="stars" id="starContainer">
+            <span class="star" data-value="1">&#9733;</span>
+            <span class="star" data-value="2">&#9733;</span>
+            <span class="star" data-value="3">&#9733;</span>
+            <span class="star" data-value="4">&#9733;</span>
+            <span class="star" data-value="5">&#9733;</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="comment">Comment</label>
+          <textarea id="comment" rows="4" required placeholder="Write your thoughts here..."></textarea>
+        </div>
+
+        <button type="submit">Submit Feedback</button>
+      </form>
+
+      <div class="feedbacks">
+        <div class="summary">
+          <span>Average Rating:</span>
+          <span class="star-average" id="averageStars">N/A</span>
+        </div>
+        <h2>What Others Say</h2>
+        <div id="feedbackList"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const form = document.getElementById("feedbackForm");
+    const feedbackList = document.getElementById("feedbackList");
+    const stars = document.querySelectorAll(".star");
+    const avgDisplay = document.getElementById("averageStars");
+    let selectedRating = 0;
+
+    stars.forEach(star => {
+      star.addEventListener("click", () => {
+        selectedRating = parseInt(star.dataset.value);
+        updateStars(selectedRating);
+      });
+
+      star.addEventListener("mouseover", () => {
+        const hoverValue = parseInt(star.dataset.value);
+        updateStars(hoverValue, true);
+      });
+
+      star.addEventListener("mouseout", () => {
+        updateStars(selectedRating);
+      });
+    });
+
+    function updateStars(rating, hover = false) {
+      stars.forEach(star => {
+        const value = parseInt(star.dataset.value);
+        star.classList.remove("selected", "hovered");
+        if (value <= rating) {
+          star.classList.add(hover ? "hovered" : "selected");
+        }
+      });
+    }
+
+    function getStarVisual(rating) {
+      const full = "★".repeat(Math.floor(rating));
+      const empty = "☆".repeat(5 - Math.floor(rating));
+      return full + empty;
+    }
+
+    function calculateAverage(feedbacks) {
+      if (!feedbacks.length) return "N/A";
+      const avg = feedbacks.reduce((sum, f) => sum + f.rating, 0) / feedbacks.length;
+      return {
+        text: `${avg.toFixed(1)} / 5 (${feedbacks.length} review${feedbacks.length > 1 ? 's' : ''})`,
+        visual: getStarVisual(avg)
+      };
+    }
+
+    function renderFeedback({ name, comment, rating }) {
+      const div = document.createElement("div");
+      div.className = "feedback";
+      div.innerHTML = `
+        <p><strong>${name}</strong></p>
+        <p class="rating">${"★".repeat(rating)}${"☆".repeat(5 - rating)}</p>
+        <p>${comment}</p>
+      `;
+      feedbackList.appendChild(div);
+    }
+
+    function saveFeedback(feedback) {
+      const existing = JSON.parse(localStorage.getItem("feedbacks")) || [];
+      existing.push(feedback);
+      localStorage.setItem("feedbacks", JSON.stringify(existing));
+      return existing;
+    }
+
+    function loadFeedbacks() {
+      const feedbacks = JSON.parse(localStorage.getItem("feedbacks")) || [];
+      feedbackList.innerHTML = "";
+      feedbacks.forEach(renderFeedback);
+      const avg = calculateAverage(feedbacks);
+      avgDisplay.innerHTML = `${avg.visual} (${avg.text})`;
+    }
+
+    document.addEventListener("DOMContentLoaded", loadFeedbacks);
+
+    form.addEventListener("submit", e => {
+      e.preventDefault();
+      const name = document.getElementById("name").value.trim();
+      const comment = document.getElementById("comment").value.trim();
+
+      if (name && comment && selectedRating > 0) {
+        const feedback = { name, comment, rating: selectedRating };
+        const updated = saveFeedback(feedback);
+        renderFeedback(feedback);
+        const avg = calculateAverage(updated);
+        avgDisplay.innerHTML = `${avg.visual} (${avg.text})`;
+        form.reset();
+        selectedRating = 0;
+        updateStars(0);
+        alert("Thank you for your feedback!");
+      } else {
+        alert("Please fill all fields and choose a rating.");
+      }
+    });
+  </script>
+
+</
+::contentReference[oaicite:24]{index=24}
+ 
